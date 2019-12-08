@@ -358,7 +358,7 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
                  if (keyboard_config.led_level > 4) {
                     keyboard_config.led_level = 0;
                  }
-                 ergodox_led_all_set((uint8_t)keyboard_config.led_level * 255 / 4 );
+                 ergodox_led_all_set((uint8_t)keyboard_config.led_level * 160 / 4 );
                  eeconfig_update_kb(keyboard_config.raw);
                  layer_state_set_kb(layer_state);
             }
