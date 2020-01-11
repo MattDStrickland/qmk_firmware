@@ -38,7 +38,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [0] = LAYOUT_ergodox_pretty(
     KC_ESCAPE,      KC_1,           KC_2,           KC_3,           KC_4,           KC_5,           LGUI(KC_L),                                     LCTL(LSFT(KC_F7)),KC_6,           KC_7,           KC_8,           KC_9,           KC_0,           LSFT(KC_F10),
     KC_DELETE,      KC_Q,           KC_G,           KC_M,           KC_L,           KC_W,           TG(3),                                          TG(2),          KC_Y,           KC_F,           KC_U,           KC_B,           KC_SCOLON,      KC_MEH,
-    KC_HYPR,        KC_D,           KC_S,           KC_T,           KC_N,           KC_R,                                                                           KC_H,           KC_A,           KC_E,           KC_O,           KC_I,           KC_BSLASH,
+    KC_HYPR,        KC_D,           KC_S,           KC_T,           KC_N,           KC_R,                                                                           KC_I,           KC_A,           KC_E,           KC_O,           KC_H,           KC_BSLASH,
     OSM(MOD_LSFT),  KC_Z,           KC_X,           KC_C,           KC_V,           KC_J,           KC_EQUAL,                                       KC_MINUS,       KC_K,           KC_P,           KC_COMMA,       KC_DOT,         RCTL_T(KC_SLASH),OSM(MOD_LSFT),
     LT(2,KC_GRAVE), KC_LCTRL,       KC_LALT,        KC_LEFT,        KC_RIGHT,                                                                                                       KC_UP,          KC_DOWN,        KC_LBRACKET,    KC_RBRACKET,    TG(1),
                                                                                                     KC_LGUI,        KC_APPLICATION, KC_LALT,        KC_QUOTE,
@@ -80,38 +80,39 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 rgblight_config_t rgblight_config;
 int enable_layer_color = 0;
 int enable_shift_color = 1;
-bool suspended = false;
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    
   switch (keycode) {
     case RGB_SLD:
       if (record->event.pressed) {
         rgblight_mode(RGBLIGHT_MODE_STATIC_LIGHT);
       }
       return false;
-	case MDS_SH_LIG_TOG:
+    case MDS_SH_LIG_TOG:
       if (record->event.pressed) {
         enable_shift_color ^= 1;
 #ifdef CONSOLE_ENABLE
-		uprintf("Shift Toggle - Value: %d\n", enable_shift_color);
+        uprintf("Shift Toggle - Value: %d\n", enable_shift_color);
 #endif 
-		if (!enable_shift_color) {
-			rgblight_disable();
-		}
+        if (!enable_shift_color) {
+          rgblight_disable();
+        }
       }
       return false;
-	case MDS_LAY_LIG_TOG:
+    case MDS_LAY_LIG_TOG:
       if (record->event.pressed) {
         enable_layer_color ^= 1;
 #ifdef CONSOLE_ENABLE
-		uprintf("Layer Toggle - Value: %d\n", enable_layer_color);
+        uprintf("Layer Toggle - Value: %d\n", enable_layer_color);
 #endif 
-		if (!enable_layer_color) {
-			rgblight_disable();
-		}
+        if (!enable_layer_color) {
+          rgblight_disable();
+        }
       }
       return false;
   }
+  
   return true;
 }
 
@@ -153,7 +154,7 @@ uint32_t layer_state_set_user(uint32_t state) {
       default:
         break;
     }
-	
+
 #ifdef CONSOLE_ENABLE
 		uprintf("Layer State Change - Value: %d\n", enable_layer_color);
 #endif 
@@ -195,31 +196,30 @@ uint32_t layer_state_set_user(uint32_t state) {
 		break;
 	}
     return state;
-
 };
 
 void oneshot_mods_changed_user(uint8_t mods) {
-	if (enable_shift_color) {
-	  if (mods & MOD_MASK_SHIFT) {
-		rgblight_enable_noeeprom();
+    if (enable_shift_color) {
+     if (mods & MOD_MASK_SHIFT) {
+       rgblight_enable_noeeprom();
         rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
         rgblight_sethsv_noeeprom(HSV_SHIFT_COLOUR);
       }
-	  if (!mods) {
+      if (!mods) {
         rgblight_disable();
       }
-	}
+    }
 }
 
 void oneshot_locked_mods_changed_user(uint8_t mods) {
-	if (enable_shift_color) {
-	  if (mods & MOD_MASK_SHIFT) {
-		rgblight_enable_noeeprom();
+    if (enable_shift_color) {
+      if (mods & MOD_MASK_SHIFT) {
+        rgblight_enable_noeeprom();
         rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
         rgblight_sethsv_noeeprom(HSV_SHIFT_COLOUR);
       }
-	  if (!mods) {
+      if (!mods) {
         rgblight_disable();
       }
-	}
+    }
 }
