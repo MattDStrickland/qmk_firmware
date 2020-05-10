@@ -28,14 +28,13 @@
 
 enum custom_keycodes {
   RGB_SLD = EZ_SAFE_RANGE,
-  MDS_TWINKLE,
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [0] = LAYOUT_ergodox_pretty(
-    KC_ESCAPE,      KC_1,           KC_2,           KC_3,           KC_4,           KC_5,           LGUI(KC_L),                                     LCTL(LSFT(KC_F7)),KC_6,           KC_7,           KC_8,           KC_9,           KC_0,           LSFT(KC_F10),
+    KC_ESCAPE,      KC_1,           KC_2,           KC_3,           KC_4,           KC_5,           LGUI(KC_L),                                     KC_CAPSLOCK,    KC_6,           KC_7,           KC_8,           KC_9,           KC_0,           LSFT(KC_F10),
     KC_DELETE,      KC_Q,           KC_G,           KC_M,           KC_L,           KC_W,           TG(3),                                          TG(2),          KC_Y,           KC_F,           KC_U,           KC_B,           KC_SCOLON,      KC_MEH,
-    KC_HYPR,        KC_D,           KC_S,           KC_T,           KC_N,           KC_R,                                                                           KC_I,           KC_A,           KC_E,           KC_O,           KC_H,           KC_BSLASH,
+    KC_HYPR,        KC_D,           KC_S,           KC_T,           KC_N,           KC_R,                                                                            KC_I,           KC_A,           KC_E,           KC_O,           KC_H,           KC_BSLASH,
     KC_LSHIFT,       KC_Z,           KC_X,           KC_C,           KC_V,           KC_J,           KC_EQUAL,                                       KC_MINUS,       KC_K,           KC_P,           KC_COMMA,       KC_DOT,         RCTL_T(KC_SLASH),KC_RSHIFT,
     LT(2,KC_GRAVE), KC_LCTRL,       KC_LALT,        KC_LEFT,        KC_RIGHT,                                                                                                       KC_UP,          KC_DOWN,        KC_LBRACKET,    KC_RBRACKET,    TG(1),
                                                                                                     KC_LGUI,        KC_APPLICATION, KC_LALT,        KC_QUOTE,
@@ -59,7 +58,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_TRANSPARENT, KC_PERC,        KC_CIRC,        KC_LBRACKET,    KC_RBRACKET,    KC_TILD,        KC_TRANSPARENT,                                 KC_TRANSPARENT, KC_AMPR,        KC_1,           KC_2,           KC_3,           KC_KP_MINUS,    KC_TRANSPARENT,
     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                                                                                 KC_EQUAL,       KC_0,           KC_KP_DOT,      KC_KP_PLUS,     KC_TRANSPARENT,
                                                                                                     RGB_MOD,        LED_LEVEL, 	    RGB_TOG,        RGB_SLD,
-                                                                                                                    RGB_HUI,        MDS_TWINKLE,
+                                                                                                                    RGB_HUI,        KC_TRANSPARENT,
                                                                                     RGB_VAD,        RGB_VAI,        RGB_HUD,       	KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT
   ),
   [3] = LAYOUT_ergodox_pretty(
@@ -126,5 +125,4 @@ uint32_t layer_state_set_user(uint32_t state) {
         break;
     }
     return state;
-
 };
