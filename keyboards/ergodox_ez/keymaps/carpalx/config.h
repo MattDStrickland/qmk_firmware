@@ -17,6 +17,3 @@
 
 #undef RGBLIGHT_EFFECT_BREATHE_MAX
 #define RGBLIGHT_EFFECT_BREATHE_MAX 100
-
-#define ONESHOT_TAP_TOGGLE 2  /* Tapping this number of times holds the key until tapped once again. */
-#define ONESHOT_TIMEOUT 1200  /* Time (in ms) before the one shot key is released */

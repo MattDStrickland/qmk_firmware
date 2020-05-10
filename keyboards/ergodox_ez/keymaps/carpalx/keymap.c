@@ -25,13 +25,10 @@
 #define NO_PIPE_ALT KC_GRAVE
 #define NO_BSLS_ALT KC_EQUAL
 
-#define HSV_SHIFT_COLOUR 96,191,70
-#define LAYER_BRIGHTNESS 85
 
 enum custom_keycodes {
   RGB_SLD = EZ_SAFE_RANGE,
-  MDS_SH_LIG_TOG,
-  MDS_LAY_LIG_TOG,
+  MDS_TWINKLE,
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -39,7 +36,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_ESCAPE,      KC_1,           KC_2,           KC_3,           KC_4,           KC_5,           LGUI(KC_L),                                     LCTL(LSFT(KC_F7)),KC_6,           KC_7,           KC_8,           KC_9,           KC_0,           LSFT(KC_F10),
     KC_DELETE,      KC_Q,           KC_G,           KC_M,           KC_L,           KC_W,           TG(3),                                          TG(2),          KC_Y,           KC_F,           KC_U,           KC_B,           KC_SCOLON,      KC_MEH,
     KC_HYPR,        KC_D,           KC_S,           KC_T,           KC_N,           KC_R,                                                                           KC_I,           KC_A,           KC_E,           KC_O,           KC_H,           KC_BSLASH,
-    OSM(MOD_LSFT),  KC_Z,           KC_X,           KC_C,           KC_V,           KC_J,           KC_EQUAL,                                       KC_MINUS,       KC_K,           KC_P,           KC_COMMA,       KC_DOT,         RCTL_T(KC_SLASH),OSM(MOD_LSFT),
+    KC_LSHIFT,       KC_Z,           KC_X,           KC_C,           KC_V,           KC_J,           KC_EQUAL,                                       KC_MINUS,       KC_K,           KC_P,           KC_COMMA,       KC_DOT,         RCTL_T(KC_SLASH),KC_RSHIFT,
     LT(2,KC_GRAVE), KC_LCTRL,       KC_LALT,        KC_LEFT,        KC_RIGHT,                                                                                                       KC_UP,          KC_DOWN,        KC_LBRACKET,    KC_RBRACKET,    TG(1),
                                                                                                     KC_LGUI,        KC_APPLICATION, KC_LALT,        KC_QUOTE,
                                                                                                                     KC_HOME,        KC_PGUP,
@@ -61,9 +58,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_TRANSPARENT, KC_HASH,        KC_DLR,         KC_LPRN,        KC_RPRN,        KC_GRAVE,                                                                       KC_DOWN,        KC_4,           KC_5,           KC_6,           KC_KP_ASTERISK, KC_TRANSPARENT,
     KC_TRANSPARENT, KC_PERC,        KC_CIRC,        KC_LBRACKET,    KC_RBRACKET,    KC_TILD,        KC_TRANSPARENT,                                 KC_TRANSPARENT, KC_AMPR,        KC_1,           KC_2,           KC_3,           KC_KP_MINUS,    KC_TRANSPARENT,
     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                                                                                 KC_EQUAL,       KC_0,           KC_KP_DOT,      KC_KP_PLUS,     KC_TRANSPARENT,
-																									RGB_MOD, 		LED_LEVEL, 		RGB_TOG, 		RGB_SLD,
-																													RGB_HUI, 		MDS_SH_LIG_TOG,
-																					RGB_VAD,        RGB_VAI,		RGB_HUD,       	MDS_LAY_LIG_TOG, KC_TRANSPARENT, KC_TRANSPARENT
+                                                                                                    RGB_MOD,        LED_LEVEL, 	    RGB_TOG,        RGB_SLD,
+                                                                                                                    RGB_HUI,        MDS_TWINKLE,
+                                                                                    RGB_VAD,        RGB_VAI,        RGB_HUD,       	KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT
   ),
   [3] = LAYOUT_ergodox_pretty(
     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                 KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
@@ -77,43 +74,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   ),
 };
 
-rgblight_config_t rgblight_config;
-int enable_layer_color = 0;
-int enable_shift_color = 1;
-
+/* Here we check for custom keycodes. */
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    
-  switch (keycode) {
-    case RGB_SLD:
-      if (record->event.pressed) {
-        rgblight_mode(RGBLIGHT_MODE_STATIC_LIGHT);
-      }
-      return false;
-    case MDS_SH_LIG_TOG:
-      if (record->event.pressed) {
-        enable_shift_color ^= 1;
-#ifdef CONSOLE_ENABLE
-        uprintf("Shift Toggle - Value: %d\n", enable_shift_color);
-#endif 
-        if (!enable_shift_color) {
-          rgblight_disable();
+    switch (keycode) {
+        case RGB_SLD:
+            if (record->event.pressed) {
+                rgblight_mode(RGBLIGHT_MODE_STATIC_LIGHT);
         }
-      }
-      return false;
-    case MDS_LAY_LIG_TOG:
-      if (record->event.pressed) {
-        enable_layer_color ^= 1;
-#ifdef CONSOLE_ENABLE
-        uprintf("Layer Toggle - Value: %d\n", enable_layer_color);
-#endif 
-        if (!enable_layer_color) {
-          rgblight_disable();
-        }
-      }
-      return false;
-  }
+        return false;
+    }
   
-  return true;
+    return true;
 }
 
 uint32_t layer_state_set_user(uint32_t state) {
@@ -154,72 +125,6 @@ uint32_t layer_state_set_user(uint32_t state) {
       default:
         break;
     }
-
-#ifdef CONSOLE_ENABLE
-		uprintf("Layer State Change - Value: %d\n", enable_layer_color);
-#endif 
-	
-	switch (layer) {
-	  case 1:
-		if(enable_layer_color) {
-		  rgblight_enable_noeeprom();
-		  rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
-          rgblight_sethsv_noeeprom(251,255,LAYER_BRIGHTNESS);
-		}
-		break;
-	  case 2:
-		if(enable_layer_color) {
-		  rgblight_enable_noeeprom();
-		  rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
-          rgblight_sethsv_noeeprom(79,255,LAYER_BRIGHTNESS);
-		}
-		break;
-	  case 3:
-		if(enable_layer_color) {
-		  rgblight_enable_noeeprom();
-		  rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
-          rgblight_sethsv_noeeprom(155,233,LAYER_BRIGHTNESS);
-		}
-		break;
-	  default:
-		if(enable_layer_color) {
-		  rgblight_config.raw = eeconfig_read_rgblight();
-		  if(rgblight_config.enable == true) {
-			rgblight_enable();
-			rgblight_mode(rgblight_config.mode);
-			rgblight_sethsv(rgblight_config.hue, rgblight_config.sat, rgblight_config.val);
-		  }
-		  else {
-			rgblight_disable();
-		  }
-		}
-		break;
-	}
     return state;
+
 };
-
-void oneshot_mods_changed_user(uint8_t mods) {
-    if (enable_shift_color) {
-     if (mods & MOD_MASK_SHIFT) {
-       rgblight_enable_noeeprom();
-        rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
-        rgblight_sethsv_noeeprom(HSV_SHIFT_COLOUR);
-      }
-      if (!mods) {
-        rgblight_disable();
-      }
-    }
-}
-
-void oneshot_locked_mods_changed_user(uint8_t mods) {
-    if (enable_shift_color) {
-      if (mods & MOD_MASK_SHIFT) {
-        rgblight_enable_noeeprom();
-        rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
-        rgblight_sethsv_noeeprom(HSV_SHIFT_COLOUR);
-      }
-      if (!mods) {
-        rgblight_disable();
-      }
-    }
-}
